@@ -1,6 +1,6 @@
 package com.rohlik.case_study.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 

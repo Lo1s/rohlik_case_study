@@ -2,7 +2,7 @@ package com.rohlik.case_study.entity;
 
 // This code defines a Product entity for a Spring Boot application using JPA.
 // It includes fields for id, name, quantity, and price, with appropriate annotations for persistence.
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class Product {
