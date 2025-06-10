@@ -88,6 +88,10 @@ public class OrderService {
             throw new IllegalStateException("Order already canceled: " + orderId);
         }
 
+        if (order.getPaid()) {
+            throw new IllegalStateException("Cannot cancel a paid order: " + orderId);
+        }
+
         // Mark order as canceled
         order.setCanceled(true);
 
