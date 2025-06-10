@@ -1,16 +1,15 @@
 package com.rohlik.case_study.dto;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public class CreateOrderDto {
-    @NotEmpty
+    @NotEmpty(message = "Order must have at least one item")
     private List<OrderItemDto> items;
 
     // Getters and setters
-
     public List<OrderItemDto> getItems() { return items; }
     public void setItems(List<OrderItemDto> items) { this.items = items; }
 

@@ -6,6 +6,7 @@ import com.rohlik.case_study.entity.Order;
 import com.rohlik.case_study.entity.OrderItem;
 import com.rohlik.case_study.entity.Product;
 import com.rohlik.case_study.exception.OutOfStockException;
+import com.rohlik.case_study.exception.ResourceNotFoundException;
 import com.rohlik.case_study.repository.OrderItemRepository;
 import com.rohlik.case_study.repository.OrderRepository;
 import com.rohlik.case_study.repository.ProductRepository;
@@ -17,6 +18,8 @@ import org.mockito.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.*;
 
 class OrderServiceTest {
@@ -76,6 +79,20 @@ class OrderServiceTest {
     }
 
     @Test
+    void createOrder_productNotFound() {
+        OrderItemDto itemDto = new OrderItemDto();
+        itemDto.setProductId(99L);
+        itemDto.setQuantity(1);
+
+        CreateOrderDto dto = new CreateOrderDto();
+        dto.setItems(List.of(itemDto));
+
+        when(productRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> orderService.createOrder(dto));
+    }
+
+    @Test
     void cancelOrder_success() {
         Order order = mock(Order.class);
         when(order.getCanceled()).thenReturn(false);
@@ -91,6 +108,17 @@ class OrderServiceTest {
     }
 
     @Test
+    void cancelOrder_alreadyPaid() {
+        Order order = mock(Order.class);
+        when(order.getCanceled()).thenReturn(false);
+        when(order.getPaid()).thenReturn(true);
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        assertThrows(IllegalStateException.class, () -> orderService.cancelOrder(1L));
+    }
+
+    @Test
     void payOrder_success() {
         Order order = mock(Order.class);
         when(order.getCanceled()).thenReturn(false);
@@ -102,5 +130,52 @@ class OrderServiceTest {
 
         verify(order).setPaid(true);
         verify(orderRepository).save(order);
+    }
+
+
+    @Test
+    void payOrder_alreadyPaid() {
+        Order order = mock(Order.class);
+        when(order.getCanceled()).thenReturn(false);
+        when(order.getPaid()).thenReturn(true);
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        assertThrows(IllegalStateException.class, () -> orderService.payOrder(1L));
+    }
+
+    @Test
+    void payOrder_canceled() {
+        Order order = mock(Order.class);
+        when(order.getCanceled()).thenReturn(true);
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        assertThrows(IllegalStateException.class, () -> orderService.payOrder(1L));
+    }
+
+    @Test
+    void expireOrders_shouldCancelUnpaidOrdersAndReleaseStock() {
+        Product product = new Product();
+        product.setQuantity(5);
+
+        OrderItem item = new OrderItem();
+        item.setProduct(product);
+        item.setQuantity(2);
+
+        Order order = mock(Order.class);
+        when(order.getPaid()).thenReturn(false);
+        when(order.getCanceled()).thenReturn(false);
+        when(order.getItems()).thenReturn(List.of(item));
+
+        List<Order> expiredOrders = List.of(order);
+
+        when(orderRepository.findExpiredOrders(any())).thenReturn(expiredOrders);
+
+        orderService.expireOrders();
+
+        verify(order).setCanceled(true);
+        verify(orderRepository).save(order);
+        verify(productRepository).save(product);
     }
 }

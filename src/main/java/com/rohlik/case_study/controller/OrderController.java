@@ -5,10 +5,16 @@ import com.rohlik.case_study.entity.Order;
 import com.rohlik.case_study.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/orders")
+@Validated
+/**
+ * OrderController handles order-related operations such as creating, canceling, and paying for orders.
+ * It uses the OrderService to perform business logic and interacts with the Order entity.
+ */
 public class OrderController {
     private final OrderService orderService;
 
@@ -19,7 +25,7 @@ public class OrderController {
     /** Create an order (deducts stock) **/
     @PostMapping
     public ResponseEntity<Order> createOrder(
-            @Validated @RequestBody CreateOrderDto dto) {
+            @Valid @RequestBody CreateOrderDto dto) {
         Order order = orderService.createOrder(dto);
         return ResponseEntity.ok(order);
     }
