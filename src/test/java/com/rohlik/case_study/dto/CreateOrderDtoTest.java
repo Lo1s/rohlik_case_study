@@ -1,4 +1,4 @@
-package com.rohlik.case_study;
+package com.rohlik.case_study.dto;
 
 import com.rohlik.case_study.dto.CreateOrderDto;
 import org.junit.jupiter.api.Test;

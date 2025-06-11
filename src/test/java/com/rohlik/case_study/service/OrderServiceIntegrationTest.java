@@ -1,4 +1,4 @@
-package com.rohlik.case_study;
+package com.rohlik.case_study.service;
 
 import com.rohlik.case_study.dto.CreateOrderDto;
 import com.rohlik.case_study.dto.CreateOrderDto.OrderItemDto;
