@@ -227,11 +227,20 @@ app.get("/health", (req, res) => {
     loadAverage: process.platform === "linux" ? require("os").loadavg() : null,
     endpoints: [
       { path: "/", method: "GET", description: "Landing page" },
-      { path: "/api-docs", method: "GET", description: "API documentation" },
+      {
+        path: "/api-docs-page",
+        method: "GET",
+        description: "API documentation page",
+      },
+      {
+        path: "/api-docs",
+        method: "GET",
+        description: "API documentation JSON",
+      },
       { path: "/products", method: "GET", description: "Products list" },
       { path: "/orders", method: "GET", description: "Orders list" },
-      { path: "/health", method: "GET", description: "Health check API" },
       { path: "/health-page", method: "GET", description: "Health check page" },
+      { path: "/health", method: "GET", description: "Health check API" },
       {
         path: "/java-commands",
         method: "GET",
