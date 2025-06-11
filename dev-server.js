@@ -275,10 +275,10 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Development Server running on http://localhost:${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs-page`);
+  console.log(`📊 API JSON: http://localhost:${PORT}/api-docs`);
   console.log(`🔧 Java Commands: http://localhost:${PORT}/java-commands`);
   console.log(`❤️  Health Check: http://localhost:${PORT}/health-page`);
-  console.log(`📊 Health API: http://localhost:${PORT}/health`);
   console.log(`🛒 Products: http://localhost:${PORT}/products`);
   console.log(`📦 Orders: http://localhost:${PORT}/orders`);
   console.log(
