@@ -1290,7 +1290,12 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
             break;
 
           case "warning":
-            element.textContent = "⚠️ Issues";
+            // Special handling for Maven warnings
+            if (elementId === "maven-status") {
+              element.textContent = "⚠️ Fix Needed";
+            } else {
+              element.textContent = "⚠️ Issues";
+            }
             element.className = "status-value status-warning";
             element.title =
               statusData.message ||
