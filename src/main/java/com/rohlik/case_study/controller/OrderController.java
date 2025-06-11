@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -24,6 +25,7 @@ public class OrderController {
 
     /** Create an order (deducts stock) **/
     @PostMapping
+    @CircuitBreaker(name = "orderService", fallbackMethod = "createOrderFallback")
     public ResponseEntity<Order> createOrder(
             @Valid @RequestBody CreateOrderDto dto) {
         Order order = orderService.createOrder(dto);
@@ -32,6 +34,7 @@ public class OrderController {
 
     /** Cancel an order (releases reserved stock) **/
     @PostMapping("/{id}/cancel")
+    @CircuitBreaker(name = "orderService", fallbackMethod = "cancelOrderFallback")
     public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
         orderService.cancelOrder(id);
         return ResponseEntity.noContent().build();
@@ -39,8 +42,23 @@ public class OrderController {
 
     /** Pay for an order (marks order as paid) **/
     @PostMapping("/{id}/pay")
+    @CircuitBreaker(name = "orderService", fallbackMethod = "payOrderFallback")
     public ResponseEntity<Void> payOrder(@PathVariable Long id) {
         orderService.payOrder(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // --- Fallback methods ---
+
+    public ResponseEntity<Order> createOrderFallback(CreateOrderDto dto, Throwable t) {
+        return ResponseEntity.status(503).build();
+    }
+
+    public ResponseEntity<Void> cancelOrderFallback(Long id, Throwable t) {
+        return ResponseEntity.status(503).build();
+    }
+
+    public ResponseEntity<Void> payOrderFallback(Long id, Throwable t) {
+        return ResponseEntity.status(503).build();
     }
 }

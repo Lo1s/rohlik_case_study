@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rohlik Case Study - Spring Boot Application</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .status {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .endpoints {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .endpoint {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s;
+        text-align: center;
+      }
+
+      .endpoint:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .endpoint h3 {
+        color: #495057;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .endpoint a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        display: block;
+        padding: 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+      }
+
+      .endpoint a:hover {
+        background-color: #667eea;
+        color: white;
+      }
+
+      .info {
+        background: #e7f3ff;
+        border: 1px solid #b3d7ff;
+        color: #0066cc;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .info h3 {
+        margin-bottom: 10px;
+      }
+
+      .commands {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .commands h3 {
+        color: #68d391;
+        margin-bottom: 10px;
+      }
+
+      .commands code {
+        background: #4a5568;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "Monaco", "Menlo", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <header class="header">
+          <h1>🚀 Rohlik Case Study</h1>
+          <p>Spring Boot Development Server</p>
+        </header>
+
+        <main class="content">
+          <div class="status">
+            <h3>✅ Development Server is Running!</h3>
+            <p>
+              Your Node.js development proxy is working correctly on port 3000.
+            </p>
+          </div>
+
+          <div class="info">
+            <h3>📝 About This Server</h3>
+            <p>
+              This is a development proxy for the Java Spring Boot application.
+              It provides API documentation and mock endpoints while the actual
+              Java application requires Java 17 to run.
+            </p>
+          </div>
+
+          <div class="endpoints">
+            <div class="endpoint">
+              <h3>📚 API Docs</h3>
+              <a href="/api-docs-page">View Documentation</a>
+            </div>
+
+            <div class="endpoint">
+              <h3>🛒 Products</h3>
+              <a href="/products-page">Products API</a>
+            </div>
+
+            <div class="endpoint">
+              <h3>📦 Orders</h3>
+              <a href="/orders-page">Orders Management</a>
+            </div>
+
+            <div class="endpoint">
+              <h3>☕ Java Setup</h3>
+              <a href="/java-setup-page">Setup Guide</a>
+            </div>
+
+            <div class="endpoint">
+              <h3>❤️ Health Check</h3>
+              <a href="/health-page">Server Status</a>
+            </div>
+          </div>
+
+          <div class="commands">
+            <h3>💻 Available Commands</h3>
+            <p>
+              <strong>Current Environment:</strong>
+              <code>npm run dev</code> (Node.js proxy)
+            </p>
+            <p>
+              <strong>Java Application:</strong>
+              <code>npm run java:dev</code> (requires Java 17)
+            </p>
+            <p><strong>Build Java:</strong> <code>npm run java:build</code></p>
+            <p><strong>Test Java:</strong> <code>npm run java:test</code></p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // Add some basic interactivity
+      document.addEventListener("DOMContentLoaded", function () {
+        const endpoints = document.querySelectorAll(".endpoint");
+        endpoints.forEach((endpoint) => {
+          endpoint.addEventListener("click", function () {
+            const link = this.querySelector("a");
+            if (link) {
+              window.location.href = link.href;
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

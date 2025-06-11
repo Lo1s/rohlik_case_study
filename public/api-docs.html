@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Documentation - Rohlik Case Study</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 40px;
+        position: relative;
+      }
+
+      .back-button {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-50%) translateX(-2px);
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        text-align: center;
+      }
+
+      .api-info {
+        background: #e7f3ff;
+        border: 1px solid #b3d7ff;
+        color: #0066cc;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px;
+      }
+
+      .nav-tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .nav-tab {
+        flex: 1;
+        padding: 15px 20px;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-weight: 600;
+        color: #6c757d;
+        transition: all 0.2s;
+      }
+
+      .nav-tab:hover {
+        background: #e9ecef;
+        color: #495057;
+      }
+
+      .nav-tab.active {
+        background: white;
+        color: #667eea;
+        border-bottom: 3px solid #667eea;
+      }
+
+      .tab-content {
+        padding: 30px;
+      }
+
+      .tab-pane {
+        display: none;
+      }
+
+      .tab-pane.active {
+        display: block;
+      }
+
+      .endpoint-section {
+        margin-bottom: 40px;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .endpoint-header {
+        background: #f8f9fa;
+        padding: 20px;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .method {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-right: 10px;
+      }
+
+      .method.get {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .method.post {
+        background: #cce5ff;
+        color: #004085;
+      }
+
+      .method.put {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .method.delete {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .endpoint-url {
+        font-family: "Monaco", "Menlo", monospace;
+        font-size: 1.1rem;
+        color: #495057;
+        background: #f8f9fa;
+        padding: 8px 12px;
+        border-radius: 4px;
+        display: inline-block;
+      }
+
+      .endpoint-body {
+        padding: 20px;
+      }
+
+      .section {
+        margin-bottom: 20px;
+      }
+
+      .section h4 {
+        color: #495057;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .code-block {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: "Monaco", "Menlo", monospace;
+        font-size: 0.9rem;
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #4a5568;
+        color: #e2e8f0;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+
+      .copy-btn:hover {
+        background: #2d3748;
+      }
+
+      .try-it-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 0.9rem;
+      }
+
+      .form-group textarea {
+        font-family: "Monaco", "Menlo", monospace;
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .try-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s;
+      }
+
+      .try-btn:hover {
+        background: #5a67d8;
+        transform: translateY(-1px);
+      }
+
+      .try-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .response-section {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        background: white;
+      }
+
+      .response-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .status-code {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .status-200 {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-400 {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .status-404 {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .model-section {
+        margin-bottom: 30px;
+      }
+
+      .model-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+      }
+
+      .model-card h4 {
+        color: #667eea;
+        margin-bottom: 15px;
+      }
+
+      .property {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .property:last-child {
+        border-bottom: none;
+      }
+
+      .property-name {
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .property-type {
+        color: #6c757d;
+        font-family: "Monaco", "Menlo", monospace;
+        font-size: 0.9rem;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <header class="header">
+          <a href="/" class="back-button">← Back to Home</a>
+          <h1>📚 API Documentation</h1>
+          <p>Rohlik Case Study - E-commerce REST API</p>
+        </header>
+
+        <div class="api-info">
+          <h3>📝 About This API</h3>
+          <p><strong>Base URL (Mock):</strong> http://localhost:3000</p>
+          <p><strong>Base URL (Java):</strong> http://localhost:8080</p>
+          <p><strong>Content-Type:</strong> application/json</p>
+          <p>
+            <strong>Note:</strong> This is currently a development proxy. For
+            full functionality, run the Java Spring Boot application.
+          </p>
+        </div>
+
+        <nav class="nav-tabs">
+          <button class="nav-tab active" onclick="showTab('endpoints')">
+            📡 Endpoints
+          </button>
+          <button class="nav-tab" onclick="showTab('models')">📋 Models</button>
+          <button class="nav-tab" onclick="showTab('testing')">
+            🧪 Try It Out
+          </button>
+          <button class="nav-tab" onclick="showTab('examples')">
+            💡 Examples
+          </button>
+        </nav>
+
+        <div class="tab-content">
+          <!-- Endpoints Tab -->
+          <div id="endpoints" class="tab-pane active">
+            <h2 style="margin-bottom: 20px; color: #495057">API Endpoints</h2>
+
+            <!-- Products Endpoints -->
+            <div class="endpoint-section">
+              <div class="endpoint-header">
+                <h3>🛒 Products API</h3>
+                <p>Manage product catalog and inventory</p>
+              </div>
+
+              <div class="endpoint-body">
+                <!-- GET Products -->
+                <div class="section">
+                  <h4>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/products</span>
+                  </h4>
+                  <p>Retrieve all products in the catalog</p>
+
+                  <div class="section">
+                    <h4>Response Example:</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+{
+  "status": "success",
+  "count": 5,
+  "data": [
+    {
+      "id": 1,
+      "name": "Apple",
+      "price": 1.50,
+      "stock": 100
+    },
+    {
+      "id": 2,
+      "name": "Banana", 
+      "price": 0.80,
+      "stock": 150
+    }
+  ]
+}</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- POST Products -->
+                <div class="section">
+                  <h4>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/products</span>
+                  </h4>
+                  <p>Create a new product</p>
+
+                  <div class="section">
+                    <h4>Request Body:</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+{
+  "name": "Orange",
+  "price": 2.00,
+  "stock": 75
+}</pre
+                      >
+                    </div>
+                  </div>
+
+                  <div class="section">
+                    <h4>Response Example:</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+{
+  "status": "success",
+  "mockResponse": {
+    "id": 123,
+    "name": "Orange",
+    "price": 2.00,
+    "stock": 75,
+    "createdAt": "2024-01-01T10:00:00.000Z"
+  }
+}</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PUT Products -->
+                <div class="section">
+                  <h4>
+                    <span class="method put">PUT</span>
+                    <span class="endpoint-url">/products/{id}</span>
+                  </h4>
+                  <p>Update an existing product</p>
+
+                  <div class="section">
+                    <h4>Request Body:</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+{
+  "name": "Red Apple",
+  "price": 1.75,
+  "stock": 120
+}</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- DELETE Products -->
+                <div class="section">
+                  <h4>
+                    <span class="method delete">DELETE</span>
+                    <span class="endpoint-url">/products/{id}</span>
+                  </h4>
+                  <p>Delete a product from the catalog</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Orders Endpoints -->
+            <div class="endpoint-section">
+              <div class="endpoint-header">
+                <h3>📦 Orders API</h3>
+                <p>Manage customer orders and order items</p>
+              </div>
+
+              <div class="endpoint-body">
+                <!-- GET Orders -->
+                <div class="section">
+                  <h4>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/orders</span>
+                  </h4>
+                  <p>Retrieve all orders</p>
+
+                  <div class="section">
+                    <h4>Response Example:</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+{
+  "status": "success",
+  "count": 2,
+  "data": [
+    {
+      "id": 1,
+      "items": [
+        {
+          "id": 1,
+          "productId": 1,
+          "quantity": 2,
+          "price": 3.00
+        }
+      ],
+      "totalPrice": 3.00,
+      "createdAt": "2024-01-01T10:00:00",
+      "expirationTime": "2024-01-01T10:15:00"
+    }
+  ]
+}</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- POST Orders -->
+                <div class="section">
+                  <h4>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/orders</span>
+                  </h4>
+                  <p>Create a new order</p>
+
+                  <div class="section">
+                    <h4>Request Body:</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2
+    },
+    {
+      "productId": 2,
+      "quantity": 1
+    }
+  ]
+}</pre
+                      >
+                    </div>
+                  </div>
+
+                  <div class="section">
+                    <h4>Response Example:</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+{
+  "status": "success",
+  "mockResponse": {
+    "id": 456,
+    "items": [...],
+    "totalPrice": 4.30,
+    "createdAt": "2024-01-01T11:00:00.000Z",
+    "expirationTime": "2024-01-01T11:15:00.000Z"
+  }
+}</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- GET Order by ID -->
+                <div class="section">
+                  <h4>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/orders/{id}</span>
+                  </h4>
+                  <p>Retrieve a specific order by ID</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Models Tab -->
+          <div id="models" class="tab-pane">
+            <h2 style="margin-bottom: 20px; color: #495057">Data Models</h2>
+
+            <div class="model-section">
+              <div class="model-card">
+                <h4>🛒 Product</h4>
+                <div class="property">
+                  <span class="property-name">id</span>
+                  <span class="property-type">Long</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">name</span>
+                  <span class="property-type">String</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">price</span>
+                  <span class="property-type">BigDecimal</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">stock</span>
+                  <span class="property-type">Integer</span>
+                </div>
+              </div>
+
+              <div class="model-card">
+                <h4>📦 Order</h4>
+                <div class="property">
+                  <span class="property-name">id</span>
+                  <span class="property-type">Long</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">items</span>
+                  <span class="property-type">List&lt;OrderItem&gt;</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">totalPrice</span>
+                  <span class="property-type">BigDecimal</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">createdAt</span>
+                  <span class="property-type">LocalDateTime</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">expirationTime</span>
+                  <span class="property-type">LocalDateTime</span>
+                </div>
+              </div>
+
+              <div class="model-card">
+                <h4>📋 OrderItem</h4>
+                <div class="property">
+                  <span class="property-name">id</span>
+                  <span class="property-type">Long</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">product</span>
+                  <span class="property-type">Product</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">quantity</span>
+                  <span class="property-type">Integer</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">price</span>
+                  <span class="property-type">BigDecimal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testing Tab -->
+          <div id="testing" class="tab-pane">
+            <h2 style="margin-bottom: 20px; color: #495057">
+              🧪 Interactive Testing
+            </h2>
+
+            <div class="try-it-section">
+              <h3 style="margin-bottom: 15px">Test API Endpoints</h3>
+
+              <div class="form-group">
+                <label for="endpoint-select">Select Endpoint:</label>
+                <select id="endpoint-select" onchange="updateTestForm()">
+                  <option value="GET:/products">GET /products</option>
+                  <option value="POST:/products">POST /products</option>
+                  <option value="GET:/orders">GET /orders</option>
+                  <option value="POST:/orders">POST /orders</option>
+                </select>
+              </div>
+
+              <div
+                class="form-group"
+                id="request-body-group"
+                style="display: none"
+              >
+                <label for="request-body">Request Body (JSON):</label>
+                <textarea
+                  id="request-body"
+                  placeholder="Enter JSON request body..."
+                ></textarea>
+              </div>
+
+              <button
+                class="try-btn"
+                onclick="executeRequest()"
+                id="execute-btn"
+              >
+                🚀 Execute Request
+              </button>
+
+              <div
+                id="response-container"
+                style="display: none"
+                class="response-section"
+              >
+                <div class="response-header">
+                  <h4>Response:</h4>
+                  <span id="response-status" class="status-code"></span>
+                </div>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyToClipboard(this)">
+                    Copy
+                  </button>
+                  <pre id="response-body"></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Examples Tab -->
+          <div id="examples" class="tab-pane">
+            <h2 style="margin-bottom: 20px; color: #495057">
+              💡 Usage Examples
+            </h2>
+
+            <div class="endpoint-section">
+              <div class="endpoint-header">
+                <h3>📝 cURL Examples</h3>
+              </div>
+
+              <div class="endpoint-body">
+                <div class="section">
+                  <h4>Get All Products</h4>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+curl -X GET http://localhost:3000/products \
+  -H "Content-Type: application/json"</pre
+                    >
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h4>Create New Product</h4>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+curl -X POST http://localhost:3000/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Orange",
+    "price": 2.00,
+    "stock": 75
+  }'</pre
+                    >
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h4>Create New Order</h4>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [
+      {
+        "productId": 1,
+        "quantity": 2
+      },
+      {
+        "productId": 2,
+        "quantity": 1
+      }
+    ]
+  }'</pre
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="endpoint-section">
+              <div class="endpoint-header">
+                <h3>🌐 JavaScript Examples</h3>
+              </div>
+
+              <div class="endpoint-body">
+                <div class="section">
+                  <h4>Fetch Products (JavaScript)</h4>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+fetch('http://localhost:3000/products')
+  .then(response => response.json())
+  .then(data => {
+    console.log('Products:', data.data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });</pre
+                    >
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h4>Create Order (JavaScript)</h4>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+const orderData = {
+  items: [
+    { productId: 1, quantity: 2 },
+    { productId: 2, quantity: 1 }
+  ]
+};
+
+fetch('http://localhost:3000/orders', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(orderData)
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Order created:', data);
+});</pre
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showTab(tabName) {
+        // Hide all tab panes
+        document.querySelectorAll(".tab-pane").forEach((pane) => {
+          pane.classList.remove("active");
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll(".nav-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Show selected tab pane
+        document.getElementById(tabName).classList.add("active");
+
+        // Add active class to clicked tab
+        event.target.classList.add("active");
+      }
+
+      function copyToClipboard(button) {
+        const codeBlock = button.nextElementSibling;
+        const text = codeBlock.textContent;
+
+        navigator.clipboard.writeText(text).then(() => {
+          const originalText = button.textContent;
+          button.textContent = "✓ Copied!";
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 2000);
+        });
+      }
+
+      function updateTestForm() {
+        const select = document.getElementById("endpoint-select");
+        const requestBodyGroup = document.getElementById("request-body-group");
+        const requestBody = document.getElementById("request-body");
+
+        const [method, endpoint] = select.value.split(":");
+
+        if (method === "POST") {
+          requestBodyGroup.style.display = "block";
+
+          if (endpoint === "/products") {
+            requestBody.value = JSON.stringify(
+              {
+                name: "New Product",
+                price: 10.99,
+                stock: 50,
+              },
+              null,
+              2,
+            );
+          } else if (endpoint === "/orders") {
+            requestBody.value = JSON.stringify(
+              {
+                items: [
+                  {
+                    productId: 1,
+                    quantity: 2,
+                  },
+                ],
+              },
+              null,
+              2,
+            );
+          }
+        } else {
+          requestBodyGroup.style.display = "none";
+          requestBody.value = "";
+        }
+      }
+
+      async function executeRequest() {
+        const select = document.getElementById("endpoint-select");
+        const requestBody = document.getElementById("request-body");
+        const executeBtn = document.getElementById("execute-btn");
+        const responseContainer = document.getElementById("response-container");
+        const responseStatus = document.getElementById("response-status");
+        const responseBodyEl = document.getElementById("response-body");
+
+        const [method, endpoint] = select.value.split(":");
+        const url = window.location.origin + endpoint;
+
+        executeBtn.disabled = true;
+        executeBtn.innerHTML = '<span class="loading"></span> Executing...';
+
+        try {
+          const options = {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+
+          if (method === "POST" && requestBody.value.trim()) {
+            options.body = requestBody.value;
+          }
+
+          const response = await fetch(url, options);
+          const data = await response.json();
+
+          responseContainer.style.display = "block";
+          responseStatus.textContent = `${response.status} ${response.statusText}`;
+          responseStatus.className = `status-code status-${Math.floor(response.status / 100)}00`;
+
+          responseBodyEl.textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          responseContainer.style.display = "block";
+          responseStatus.textContent = "Error";
+          responseStatus.className = "status-code status-400";
+          responseBodyEl.textContent = JSON.stringify(
+            {
+              error: "Network Error",
+              message: error.message,
+            },
+            null,
+            2,
+          );
+        }
+
+        executeBtn.disabled = false;
+        executeBtn.innerHTML = "🚀 Execute Request";
+      }
+
+      // Initialize the form
+      document.addEventListener("DOMContentLoaded", function () {
+        updateTestForm();
+      });
+    </script>
+  </body>
+</html>
