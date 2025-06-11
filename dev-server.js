@@ -177,12 +177,42 @@ app.post("/orders", (req, res) => {
     receivedData: req.body,
     mockResponse: {
       id: Math.floor(Math.random() * 1000),
-      ...req.body,
+      items: req.body.items || [],
+      totalPrice: calculateMockOrderTotal(req.body.items || []),
       createdAt: new Date().toISOString(),
       expirationTime: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
     },
   });
 });
+
+app.get("/orders/:id", (req, res) => {
+  const orderId = parseInt(req.params.id);
+
+  // Mock order data based on ID
+  const mockOrder = {
+    id: orderId,
+    items: [{ id: 1, productId: 1, quantity: 2, price: 3.0 }],
+    totalPrice: 3.0,
+    createdAt: "2024-01-01T10:00:00",
+    expirationTime: "2024-01-01T10:15:00",
+  };
+
+  res.json({
+    message: "Mock Get Order Endpoint",
+    note: "This is a development mock. Run the actual Spring Boot app for real functionality.",
+    status: "success",
+    data: mockOrder,
+  });
+});
+
+// Helper function to calculate mock order total
+function calculateMockOrderTotal(items) {
+  const productPrices = { 1: 1.5, 2: 0.8, 3: 2.0, 4: 3.2, 5: 2.5 };
+  return items.reduce((total, item) => {
+    const price = productPrices[item.productId] || 1.0;
+    return total + price * item.quantity;
+  }, 0);
+}
 
 // Java commands information
 app.get("/java-commands", (req, res) => {
