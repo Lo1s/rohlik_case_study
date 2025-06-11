@@ -1177,12 +1177,30 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
 
         switch (statusData.status) {
           case "success":
-            element.textContent = "✅ Detected";
+            // Special handling for Maven to show wrapper vs system Maven
+            if (elementId === "maven-status") {
+              if (
+                statusData.message &&
+                statusData.message.includes("Maven Wrapper")
+              ) {
+                element.textContent = "✅ Wrapper Ready";
+              } else {
+                element.textContent = "✅ Detected";
+              }
+            } else {
+              element.textContent = "✅ Detected";
+            }
             element.className = "status-value status-success";
-            element.title =
-              statusData.version ||
-              statusData.message ||
-              "Installed and working";
+
+            // Create detailed tooltip
+            let tooltip = statusData.message || "Installed and working";
+            if (statusData.version) {
+              tooltip += "\n\nVersion: " + statusData.version;
+            }
+            if (statusData.path) {
+              tooltip += "\nCommand: " + statusData.path;
+            }
+            element.title = tooltip;
             break;
 
           case "warning":
@@ -1198,8 +1216,15 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
           default:
             element.textContent = "❌ Not Found";
             element.className = "status-value status-error";
-            element.title =
-              statusData.message || "Not installed or not in PATH";
+
+            // Special Maven error message
+            if (elementId === "maven-status") {
+              element.title =
+                "Maven Wrapper (./mvnw) and System Maven (mvn) not available.\n\nSolution: The Maven Wrapper should be included in this project. Try running: chmod +x mvnw";
+            } else {
+              element.title =
+                statusData.message || "Not installed or not in PATH";
+            }
             break;
         }
       }
