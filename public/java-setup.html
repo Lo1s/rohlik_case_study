@@ -1064,7 +1064,11 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
     <script>
       // Initialize system check on page load
       document.addEventListener("DOMContentLoaded", function () {
+        // Initial check after page load
         setTimeout(checkSystemStatus, 1000);
+
+        // Periodic check every 30 seconds
+        setInterval(checkSystemStatus, 30000);
       });
 
       // Tab functionality
