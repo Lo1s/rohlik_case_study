@@ -113,6 +113,33 @@ app.post("/products", (req, res) => {
   });
 });
 
+app.put("/products/:id", (req, res) => {
+  const productId = req.params.id;
+  res.json({
+    message: "Mock Update Product Endpoint",
+    note: "This is a development mock. Run the actual Spring Boot app for real functionality.",
+    status: "success",
+    productId: productId,
+    receivedData: req.body,
+    mockResponse: {
+      id: parseInt(productId),
+      ...req.body,
+      updatedAt: new Date().toISOString(),
+    },
+  });
+});
+
+app.delete("/products/:id", (req, res) => {
+  const productId = req.params.id;
+  res.json({
+    message: "Mock Delete Product Endpoint",
+    note: "This is a development mock. Run the actual Spring Boot app for real functionality.",
+    status: "success",
+    deletedProductId: parseInt(productId),
+    deletedAt: new Date().toISOString(),
+  });
+});
+
 // Mock Orders endpoints
 app.get("/orders", (req, res) => {
   res.json({
