@@ -317,11 +317,14 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`🚀 Development Server running on http://localhost:${PORT}`);
   console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs-page`);
-  console.log(`📊 API JSON: http://localhost:${PORT}/api-docs`);
-  console.log(`🔧 Java Commands: http://localhost:${PORT}/java-commands`);
-  console.log(`❤️  Health Check: http://localhost:${PORT}/health-page`);
-  console.log(`🛒 Products: http://localhost:${PORT}/products`);
+  console.log(`🛒 Products Management: http://localhost:${PORT}/products-page`);
   console.log(`📦 Orders: http://localhost:${PORT}/orders`);
+  console.log(`❤️  Health Check: http://localhost:${PORT}/health-page`);
+  console.log(`🔧 Java Commands: http://localhost:${PORT}/java-commands`);
+  console.log(`\n📊 API Endpoints:`);
+  console.log(`   Products API: http://localhost:${PORT}/products`);
+  console.log(`   Orders API: http://localhost:${PORT}/orders`);
+  console.log(`   API Docs JSON: http://localhost:${PORT}/api-docs`);
   console.log(
     `\n📝 This is a development proxy for the Spring Boot application`,
   );
