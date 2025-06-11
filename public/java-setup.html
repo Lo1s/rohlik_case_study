@@ -1336,6 +1336,11 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
             // Special handling for Maven warnings
             if (elementId === "maven-status") {
               element.textContent = "⚠️ Fix Needed";
+              // Show the fix section if it's a permission issue
+              if (statusData.message && statusData.message.includes("chmod")) {
+                document.getElementById("maven-fix-section").style.display =
+                  "block";
+              }
             } else {
               element.textContent = "⚠️ Issues";
             }
