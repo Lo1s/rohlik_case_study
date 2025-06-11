@@ -263,6 +263,11 @@ app.get("/orders-page", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "orders-page.html"));
 });
 
+// Java setup guide page (HTML)
+app.get("/java-setup-page", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "java-setup.html"));
+});
+
 // Health check page (HTML)
 app.get("/health-page", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "health.html"));
