@@ -191,17 +191,48 @@ app.get("/java-commands", (req, res) => {
   });
 });
 
-// Health check
+// Health check page (HTML)
+app.get("/health-page", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "health.html"));
+});
+
+// Health check API (JSON)
 app.get("/health", (req, res) => {
+  const memory = process.memoryUsage();
+  const uptime = process.uptime();
+
   res.json({
     status: "UP",
     service: "Development Proxy Server",
     timestamp: new Date().toISOString(),
     environment: "development",
     port: PORT,
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
+    uptime: uptime,
+    memory: {
+      rss: memory.rss,
+      heapTotal: memory.heapTotal,
+      heapUsed: memory.heapUsed,
+      external: memory.external,
+      arrayBuffers: memory.arrayBuffers,
+    },
     version: "1.0.0",
+    nodeVersion: process.version,
+    platform: process.platform,
+    arch: process.arch,
+    loadAverage: process.platform === "linux" ? require("os").loadavg() : null,
+    endpoints: [
+      { path: "/", method: "GET", description: "Landing page" },
+      { path: "/api-docs", method: "GET", description: "API documentation" },
+      { path: "/products", method: "GET", description: "Products list" },
+      { path: "/orders", method: "GET", description: "Orders list" },
+      { path: "/health", method: "GET", description: "Health check API" },
+      { path: "/health-page", method: "GET", description: "Health check page" },
+      {
+        path: "/java-commands",
+        method: "GET",
+        description: "Java setup guide",
+      },
+    ],
   });
 });
 
