@@ -191,6 +191,11 @@ app.get("/java-commands", (req, res) => {
   });
 });
 
+// API documentation page (HTML)
+app.get("/api-docs-page", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "api-docs.html"));
+});
+
 // Health check page (HTML)
 app.get("/health-page", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "health.html"));
