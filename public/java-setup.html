@@ -845,6 +845,31 @@ spring.jpa.hibernate.ddl-auto=create-drop</pre
               <div class="step-section">
                 <div class="step-header">
                   <div class="step-number">1</div>
+                  <h3 class="step-title">Maven Wrapper Setup (First Time)</h3>
+                </div>
+                <div class="step-content">
+                  <div class="alert alert-info">
+                    <strong>📝 One-time setup:</strong> Make the Maven Wrapper
+                    executable (Linux/macOS only)
+                  </div>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Linux/macOS - make wrapper executable
+chmod +x mvnw
+
+# Windows - use .cmd version
+# No setup needed, use: mvnw.cmd instead of ./mvnw</pre
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">2</div>
                   <h3 class="step-title">Start the Application</h3>
                 </div>
                 <div class="step-content">
@@ -947,7 +972,7 @@ export PATH=$JAVA_HOME/bin:$PATH</pre
                   </div>
 
                   <div class="alert alert-warning">
-                    <strong>��️ Issue:</strong> "Port 8080 already in use"
+                    <strong>⚠️ Issue:</strong> "Port 8080 already in use"
                   </div>
                   <div class="code-block">
                     <button class="copy-btn" onclick="copyToClipboard(this)">
