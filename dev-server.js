@@ -313,36 +313,55 @@ app.get("/system-check", async (req, res) => {
       results.java.message = "Java not installed or not in PATH";
     }
 
-    // Check Maven installation
+    // Check Maven installation (prioritize Maven Wrapper since it's included in the project)
+    let mavenWrapperAvailable = false;
+    let mavenSystemAvailable = false;
+
+    // First check if Maven Wrapper is available (preferred for this project)
+    try {
+      const mvnwResult = await execAsync("./mvnw -version 2>&1");
+      const mvnwOutput = mvnwResult.stdout || mvnwResult.stderr;
+
+      if (mvnwOutput.includes("Apache Maven")) {
+        mavenWrapperAvailable = true;
+        results.maven.status = "success";
+        results.maven.version = mvnwOutput.split("\n")[0].trim();
+        results.maven.message = "Maven Wrapper (mvnw) - Recommended ✅";
+        results.maven.path = "./mvnw";
+      }
+    } catch (mvnwError) {
+      // Maven wrapper not available, continue to check system Maven
+    }
+
+    // Also check if system Maven is available
     try {
       const mavenResult = await execAsync("mvn -version 2>&1");
       const mavenOutput = mavenResult.stdout || mavenResult.stderr;
 
       if (mavenOutput.includes("Apache Maven")) {
-        results.maven.status = "success";
-        results.maven.version = mavenOutput.split("\n")[0].trim();
-      } else {
-        results.maven.status = "error";
-        results.maven.message = "Maven not found";
-      }
-    } catch (error) {
-      // Try Maven wrapper as fallback
-      try {
-        const mvnwResult = await execAsync("./mvnw -version 2>&1");
-        const mvnwOutput = mvnwResult.stdout || mvnwResult.stderr;
+        mavenSystemAvailable = true;
 
-        if (mvnwOutput.includes("Apache Maven")) {
+        if (!mavenWrapperAvailable) {
+          // Only use system Maven if wrapper is not available
           results.maven.status = "success";
-          results.maven.version = mvnwOutput.split("\n")[0].trim();
-          results.maven.message = "Using Maven Wrapper";
+          results.maven.version = mavenOutput.split("\n")[0].trim();
+          results.maven.message = "System Maven (mvn)";
+          results.maven.path = "mvn";
         } else {
-          results.maven.status = "error";
-          results.maven.message = "Maven and Maven Wrapper not available";
+          // Both available - wrapper is preferred, but mention system Maven too
+          results.maven.message =
+            "Maven Wrapper (mvnw) + System Maven available ✅";
         }
-      } catch (mvnwError) {
-        results.maven.status = "error";
-        results.maven.message = "Maven not installed and wrapper not available";
       }
+    } catch (mavenError) {
+      // System Maven not available
+    }
+
+    // Set error status only if neither is available
+    if (!mavenWrapperAvailable && !mavenSystemAvailable) {
+      results.maven.status = "error";
+      results.maven.message =
+        "Neither Maven Wrapper (./mvnw) nor System Maven (mvn) available";
     }
 
     // Check Spring Boot (by checking if Java app is running)
