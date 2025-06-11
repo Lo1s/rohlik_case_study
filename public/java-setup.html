@@ -1181,7 +1181,7 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
                   🔍 Run System Check
                 </button>
                 <button class="btn btn-success" onclick="openSpringBootApp()">
-                  🚀 Open Spring Boot App
+                  ���� Open Spring Boot App
                 </button>
               </div>
             </div>
@@ -1363,6 +1363,9 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
             if (elementId === "maven-status") {
               element.title =
                 "Maven Wrapper (./mvnw) and System Maven (mvn) not available.\n\nSolution: The Maven Wrapper should be included in this project. Try running: chmod +x mvnw";
+              // Hide fix section on error
+              document.getElementById("maven-fix-section").style.display =
+                "none";
             } else {
               element.title =
                 statusData.message || "Not installed or not in PATH";
