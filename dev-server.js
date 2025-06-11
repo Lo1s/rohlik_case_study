@@ -273,6 +273,102 @@ app.get("/health-page", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "health.html"));
 });
 
+// System requirements check endpoints
+app.get("/system-check", async (req, res) => {
+  const { exec } = require("child_process");
+  const { promisify } = require("util");
+  const execAsync = promisify(exec);
+
+  const results = {
+    java: { status: "checking", version: null, path: null },
+    maven: { status: "checking", version: null, path: null },
+    springboot: { status: "checking", message: null },
+  };
+
+  try {
+    // Check Java installation
+    try {
+      const javaResult = await execAsync("java -version 2>&1");
+      const javaVersion = javaResult.stdout || javaResult.stderr;
+
+      if (
+        javaVersion.includes("17") ||
+        javaVersion.includes('openjdk version "17')
+      ) {
+        results.java.status = "success";
+        results.java.version = javaVersion.split("\n")[0].trim();
+      } else if (
+        javaVersion.includes("java version") ||
+        javaVersion.includes("openjdk version")
+      ) {
+        results.java.status = "warning";
+        results.java.version = javaVersion.split("\n")[0].trim();
+        results.java.message = "Java found but not version 17";
+      } else {
+        results.java.status = "error";
+        results.java.message = "Java not found";
+      }
+    } catch (error) {
+      results.java.status = "error";
+      results.java.message = "Java not installed or not in PATH";
+    }
+
+    // Check Maven installation
+    try {
+      const mavenResult = await execAsync("mvn -version 2>&1");
+      const mavenOutput = mavenResult.stdout || mavenResult.stderr;
+
+      if (mavenOutput.includes("Apache Maven")) {
+        results.maven.status = "success";
+        results.maven.version = mavenOutput.split("\n")[0].trim();
+      } else {
+        results.maven.status = "error";
+        results.maven.message = "Maven not found";
+      }
+    } catch (error) {
+      // Try Maven wrapper as fallback
+      try {
+        const mvnwResult = await execAsync("./mvnw -version 2>&1");
+        const mvnwOutput = mvnwResult.stdout || mvnwResult.stderr;
+
+        if (mvnwOutput.includes("Apache Maven")) {
+          results.maven.status = "success";
+          results.maven.version = mvnwOutput.split("\n")[0].trim();
+          results.maven.message = "Using Maven Wrapper";
+        } else {
+          results.maven.status = "error";
+          results.maven.message = "Maven and Maven Wrapper not available";
+        }
+      } catch (mvnwError) {
+        results.maven.status = "error";
+        results.maven.message = "Maven not installed and wrapper not available";
+      }
+    }
+
+    // Check Spring Boot (by checking if Java app is running)
+    try {
+      const response = await fetch("http://localhost:8080/actuator/health", {
+        timeout: 2000,
+      });
+      if (response.ok) {
+        results.springboot.status = "success";
+        results.springboot.message = "Spring Boot application is running";
+      } else {
+        results.springboot.status = "warning";
+        results.springboot.message =
+          "Port 8080 responding but health endpoint unavailable";
+      }
+    } catch (error) {
+      results.springboot.status = "error";
+      results.springboot.message = "Spring Boot application not running";
+    }
+  } catch (error) {
+    console.error("System check error:", error);
+  }
+
+  res.json(results);
+});
+
 // Java status check endpoint
 app.get("/java-status", async (req, res) => {
   try {
@@ -419,7 +515,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`�� Development Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Development Server running on http://localhost:${PORT}`);
   console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs-page`);
   console.log(`🛒 Products Management: http://localhost:${PORT}/products-page`);
   console.log(`📦 Orders Management: http://localhost:${PORT}/orders-page`);
