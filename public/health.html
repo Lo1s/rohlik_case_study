@@ -551,6 +551,9 @@
           // Update last update time
           document.getElementById("lastUpdate").textContent =
             `Last updated: ${timestamp}`;
+
+          // Check Java application status
+          checkJavaStatus();
         } catch (error) {
           console.error("Failed to fetch health data:", error);
           document.getElementById("errorMessage").textContent =
@@ -560,9 +563,61 @@
           document.getElementById("serverStatus").textContent = "ERROR";
           document.getElementById("serverStatus").className =
             "status-value status-error";
+
+          // Also update Java status on error
+          checkJavaStatus();
         }
 
         container.classList.remove("loading");
+      }
+
+      // Check Java Spring Boot application status
+      async function checkJavaStatus() {
+        const javaStatusEl = document.getElementById("java-status");
+        const portStatusEl = document.getElementById("java-port-status");
+
+        try {
+          // Try to reach Spring Boot health endpoint
+          const response = await fetch(
+            "http://localhost:8080/actuator/health",
+            {
+              mode: "cors",
+              timeout: 5000,
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            javaStatusEl.textContent = "✅ Running";
+            javaStatusEl.style.color = "#28a745";
+            portStatusEl.textContent = "8080 - Active";
+            portStatusEl.style.color = "#28a745";
+          } else {
+            throw new Error("Spring Boot not responding properly");
+          }
+        } catch (error) {
+          // Try alternative endpoint
+          try {
+            const response = await fetch("http://localhost:8080/", {
+              mode: "cors",
+              timeout: 3000,
+            });
+
+            if (response.ok) {
+              javaStatusEl.textContent = "⚠️ Partially Running";
+              javaStatusEl.style.color = "#ffc107";
+              portStatusEl.textContent = "8080 - Responding";
+              portStatusEl.style.color = "#ffc107";
+            } else {
+              throw new Error("Java app not responding");
+            }
+          } catch (secondError) {
+            javaStatusEl.textContent = "❌ Not Running";
+            javaStatusEl.style.color = "#dc3545";
+            portStatusEl.textContent = "8080 - Not Responding";
+            portStatusEl.style.color = "#dc3545";
+          }
+        }
       }
 
       function toggleAutoRefresh() {
