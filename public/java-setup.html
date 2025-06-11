@@ -1121,40 +1121,68 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
         document.getElementById("springboot-status").className =
           "status-value status-checking";
 
-        // Simulate system checks (in real implementation, these would be actual checks)
-        setTimeout(() => {
-          // Java check (simulated)
-          document.getElementById("java-status").textContent = "Not Detected";
+        try {
+          // Use server-side system check to avoid CORS and shell access issues
+          const response = await fetch("/system-check");
+          const data = await response.json();
+
+          // Update Java status
+          updateStatusDisplay("java-status", data.java);
+
+          // Update Maven status
+          updateStatusDisplay("maven-status", data.maven);
+
+          // Update Spring Boot status
+          updateStatusDisplay("springboot-status", data.springboot);
+        } catch (error) {
+          console.error("System check failed:", error);
+
+          // Set error status for all if the check fails
+          document.getElementById("java-status").textContent = "Check Failed";
           document.getElementById("java-status").className =
             "status-value status-error";
 
-          // Maven check (simulated)
-          document.getElementById("maven-status").textContent = "Not Detected";
+          document.getElementById("maven-status").textContent = "Check Failed";
           document.getElementById("maven-status").className =
             "status-value status-error";
 
-          // Spring Boot check
-          checkSpringBootStatus();
-        }, 2000);
-      }
-
-      // Check Spring Boot application status
-      async function checkSpringBootStatus() {
-        try {
-          const response = await fetch("http://localhost:8080/actuator/health");
-          if (response.ok) {
-            document.getElementById("springboot-status").textContent =
-              "Running ✅";
-            document.getElementById("springboot-status").className =
-              "status-value status-success";
-          } else {
-            throw new Error("Not responding");
-          }
-        } catch (error) {
           document.getElementById("springboot-status").textContent =
-            "Not Running";
+            "Check Failed";
           document.getElementById("springboot-status").className =
             "status-value status-error";
+        }
+      }
+
+      // Update individual status display
+      function updateStatusDisplay(elementId, statusData) {
+        const element = document.getElementById(elementId);
+
+        switch (statusData.status) {
+          case "success":
+            element.textContent = "✅ Detected";
+            element.className = "status-value status-success";
+            element.title =
+              statusData.version ||
+              statusData.message ||
+              "Installed and working";
+            break;
+
+          case "warning":
+            element.textContent = "⚠️ Issues";
+            element.className = "status-value status-warning";
+            element.title =
+              statusData.message ||
+              statusData.version ||
+              "Detected but may have issues";
+            break;
+
+          case "error":
+          default:
+            element.textContent = "❌ Not Found";
+            element.className = "status-value status-error";
+            element.title =
+              statusData.message || "Not installed or not in PATH";
+            break;
         }
       }
 
