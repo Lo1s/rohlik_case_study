@@ -1316,6 +1316,9 @@ export MAVEN_OPTS="-Xmx2g -Xms1g"
               } else {
                 element.textContent = "✅ Detected";
               }
+              // Hide fix section on success
+              document.getElementById("maven-fix-section").style.display =
+                "none";
             } else {
               element.textContent = "✅ Detected";
             }
