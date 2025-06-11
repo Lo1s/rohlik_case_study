@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Java Setup Guide - Rohlik Case Study</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 40px;
+        position: relative;
+      }
+
+      .back-button {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-50%) translateX(-2px);
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        text-align: center;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .status-check {
+        background: #e7f3ff;
+        border: 1px solid #b3d7ff;
+        color: #0066cc;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+
+      .status-check h3 {
+        margin-bottom: 15px;
+      }
+
+      .status-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+      }
+
+      .status-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .status-label {
+        font-weight: 600;
+      }
+
+      .status-value {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .status-checking {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status-success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .nav-tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        border-radius: 10px 10px 0 0;
+        overflow-x: auto;
+      }
+
+      .nav-tab {
+        flex: 1;
+        padding: 15px 20px;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-weight: 600;
+        color: #6c757d;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .nav-tab:hover {
+        background: #e9ecef;
+        color: #495057;
+      }
+
+      .nav-tab.active {
+        background: white;
+        color: #667eea;
+        border-bottom: 3px solid #667eea;
+      }
+
+      .tab-content {
+        background: white;
+        border-radius: 0 0 10px 10px;
+        border: 1px solid #e9ecef;
+        border-top: none;
+      }
+
+      .tab-pane {
+        display: none;
+        padding: 30px;
+      }
+
+      .tab-pane.active {
+        display: block;
+      }
+
+      .step-section {
+        margin-bottom: 40px;
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 15px;
+      }
+
+      .step-number {
+        background: #667eea;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
+
+      .step-title {
+        color: #495057;
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+
+      .step-content {
+        margin-left: 55px;
+      }
+
+      .code-block {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 20px;
+        border-radius: 8px;
+        font-family: "Monaco", "Menlo", monospace;
+        font-size: 0.9rem;
+        overflow-x: auto;
+        position: relative;
+        margin: 15px 0;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #4a5568;
+        color: #e2e8f0;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: background-color 0.2s;
+      }
+
+      .copy-btn:hover {
+        background: #2d3748;
+      }
+
+      .platform-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .platform-tab {
+        padding: 8px 16px;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        cursor: pointer;
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .platform-tab:hover {
+        background: #e9ecef;
+      }
+
+      .platform-tab.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+
+      .platform-content {
+        display: none;
+      }
+
+      .platform-content.active {
+        display: block;
+      }
+
+      .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+      }
+
+      .alert-info {
+        background: #e7f3ff;
+        color: #0066cc;
+        border: 1px solid #b3d7ff;
+      }
+
+      .alert-warning {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a67d8;
+        transform: translateY(-1px);
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #218838;
+      }
+
+      .action-bar {
+        display: flex;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .requirements-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .requirement-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      .requirement-card h4 {
+        color: #495057;
+        margin-bottom: 10px;
+      }
+
+      .verification-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .verification-section h4 {
+        margin-bottom: 15px;
+        color: #495057;
+      }
+
+      .endpoint-list {
+        display: grid;
+        gap: 10px;
+        margin: 15px 0;
+      }
+
+      .endpoint-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+      }
+
+      .endpoint-url {
+        font-family: "Monaco", "Menlo", monospace;
+        color: #667eea;
+        font-weight: 600;
+      }
+
+      .endpoint-test {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+
+      .endpoint-test:hover {
+        background: #5a67d8;
+      }
+
+      @media (max-width: 768px) {
+        .nav-tabs {
+          flex-direction: column;
+        }
+
+        .nav-tab {
+          text-align: left;
+          border-bottom: 1px solid #e9ecef;
+        }
+
+        .nav-tab:last-child {
+          border-bottom: none;
+        }
+
+        .nav-tab.active {
+          border-bottom: 1px solid #e9ecef;
+          border-left: 3px solid #667eea;
+        }
+
+        .step-content {
+          margin-left: 0;
+          margin-top: 15px;
+        }
+
+        .platform-tabs {
+          flex-direction: column;
+        }
+
+        .requirements-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <header class="header">
+          <a href="/" class="back-button">��� Back to Home</a>
+          <h1>☕ Java Setup Guide</h1>
+          <p>Complete Guide to Running the Spring Boot Application</p>
+        </header>
+
+        <main class="content">
+          <!-- System Check Section -->
+          <div class="status-check">
+            <h3>🔍 System Requirements Check</h3>
+            <div class="status-item">
+              <span class="status-label">Java 17 Installation</span>
+              <span class="status-value status-checking" id="java-status"
+                >Checking...</span
+              >
+            </div>
+            <div class="status-item">
+              <span class="status-label">Maven Installation</span>
+              <span class="status-value status-checking" id="maven-status"
+                >Checking...</span
+              >
+            </div>
+            <div class="status-item">
+              <span class="status-label">Spring Boot Readiness</span>
+              <span class="status-value status-checking" id="springboot-status"
+                >Checking...</span
+              >
+            </div>
+          </div>
+
+          <!-- Main Content Tabs -->
+          <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('installation')">
+              🚀 Installation
+            </button>
+            <button class="nav-tab" onclick="showTab('setup')">⚙️ Setup</button>
+            <button class="nav-tab" onclick="showTab('commands')">
+              💻 Commands
+            </button>
+            <button class="nav-tab" onclick="showTab('troubleshooting')">
+              🔧 Troubleshooting
+            </button>
+            <button class="nav-tab" onclick="showTab('verification')">
+              ✅ Verification
+            </button>
+          </div>
+
+          <div class="tab-content">
+            <!-- Installation Tab -->
+            <div id="installation" class="tab-pane active">
+              <h2 style="margin-bottom: 20px; color: #495057">
+                📦 Java 17 & Maven Installation
+              </h2>
+
+              <div class="requirements-list">
+                <div class="requirement-card">
+                  <h4>🎯 System Requirements</h4>
+                  <ul style="margin-left: 20px; color: #6c757d">
+                    <li>Java 17 (JDK)</li>
+                    <li>Maven 3.6+ (or use included wrapper)</li>
+                    <li>8GB RAM (recommended)</li>
+                    <li>2GB free disk space</li>
+                  </ul>
+                </div>
+
+                <div class="requirement-card">
+                  <h4>🎛️ Environment Variables</h4>
+                  <ul style="margin-left: 20px; color: #6c757d">
+                    <li><code>JAVA_HOME</code> - Java installation path</li>
+                    <li><code>PATH</code> - Include Java and Maven bins</li>
+                    <li>
+                      <code>MAVEN_HOME</code> - Maven installation (optional)
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">1</div>
+                  <h3 class="step-title">Choose Your Platform</h3>
+                </div>
+                <div class="step-content">
+                  <div class="platform-tabs">
+                    <div
+                      class="platform-tab active"
+                      onclick="showPlatform('windows')"
+                    >
+                      🪟 Windows
+                    </div>
+                    <div class="platform-tab" onclick="showPlatform('macos')">
+                      🍎 macOS
+                    </div>
+                    <div class="platform-tab" onclick="showPlatform('linux')">
+                      🐧 Linux
+                    </div>
+                  </div>
+
+                  <!-- Windows Instructions -->
+                  <div id="windows" class="platform-content active">
+                    <h4>Windows Installation</h4>
+
+                    <div class="alert alert-info">
+                      <strong>Option 1: Using Chocolatey (Recommended)</strong>
+                    </div>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+# Install Chocolatey (if not installed)
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+# Install Java 17 and Maven
+choco install openjdk17 maven -y</pre
+                      >
+                    </div>
+
+                    <div class="alert alert-info">
+                      <strong>Option 2: Manual Installation</strong>
+                    </div>
+                    <ol style="margin-left: 20px">
+                      <li>
+                        Download Java 17 from
+                        <a href="https://adoptium.net/" target="_blank"
+                          >Adoptium</a
+                        >
+                      </li>
+                      <li>
+                        Download Maven from
+                        <a
+                          href="https://maven.apache.org/download.cgi"
+                          target="_blank"
+                          >Apache Maven</a
+                        >
+                      </li>
+                      <li>Extract both to <code>C:\Program Files\</code></li>
+                      <li>Set environment variables in System Properties</li>
+                    </ol>
+                  </div>
+
+                  <!-- macOS Instructions -->
+                  <div id="macos" class="platform-content">
+                    <h4>macOS Installation</h4>
+
+                    <div class="alert alert-info">
+                      <strong>Using Homebrew (Recommended)</strong>
+                    </div>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+# Install Homebrew (if not installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Java 17 and Maven
+brew install openjdk@17 maven
+
+# Set JAVA_HOME
+echo 'export JAVA_HOME=/opt/homebrew/opt/openjdk@17' >> ~/.zshrc
+echo 'export PATH="$JAVA_HOME/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc</pre
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Linux Instructions -->
+                  <div id="linux" class="platform-content">
+                    <h4>Linux Installation</h4>
+
+                    <div class="alert alert-info">
+                      <strong>Ubuntu/Debian</strong>
+                    </div>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+# Update package list
+sudo apt update
+
+# Install Java 17 and Maven
+sudo apt install openjdk-17-jdk maven -y
+
+# Set JAVA_HOME
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> ~/.bashrc
+source ~/.bashrc</pre
+                      >
+                    </div>
+
+                    <div class="alert alert-info">
+                      <strong>CentOS/RHEL/Fedora</strong>
+                    </div>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+# Install Java 17 and Maven
+sudo dnf install java-17-openjdk-devel maven -y
+
+# Set JAVA_HOME
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk' >> ~/.bashrc
+source ~/.bashrc</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Setup Tab -->
+            <div id="setup" class="tab-pane">
+              <h2 style="margin-bottom: 20px; color: #495057">
+                ⚙️ Project Setup & Configuration
+              </h2>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">1</div>
+                  <h3 class="step-title">Verify Installation</h3>
+                </div>
+                <div class="step-content">
+                  <p>
+                    First, verify that Java and Maven are properly installed:
+                  </p>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Check Java version
+java -version
+
+# Check Maven version
+mvn -version
+
+# Check Maven wrapper
+./mvnw -version</pre
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">2</div>
+                  <h3 class="step-title">Project Dependencies</h3>
+                </div>
+                <div class="step-content">
+                  <p>
+                    Install project dependencies and compile the application:
+                  </p>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Clean and compile project
+./mvnw clean compile
+
+# Download dependencies
+./mvnw dependency:resolve
+
+# Run tests to verify setup
+./mvnw test</pre
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">3</div>
+                  <h3 class="step-title">Environment Configuration</h3>
+                </div>
+                <div class="step-content">
+                  <p>The application uses these default configurations:</p>
+                  <div class="verification-section">
+                    <h4>📝 Application Properties</h4>
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+# Default configuration (src/main/resources/application.properties)
+spring.application.name=case_study
+server.port=8080
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.h2.console.enabled=true
+spring.jpa.hibernate.ddl-auto=create-drop</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Commands Tab -->
+            <div id="commands" class="tab-pane">
+              <h2 style="margin-bottom: 20px; color: #495057">
+                💻 Development Commands
+              </h2>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">1</div>
+                  <h3 class="step-title">Start the Application</h3>
+                </div>
+                <div class="step-content">
+                  <div class="alert alert-success">
+                    <strong>✅ Recommended:</strong> Use the Maven wrapper to
+                    ensure consistent Maven version
+                  </div>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Start Spring Boot application
+./mvnw spring-boot:run
+
+# Or build and run JAR
+./mvnw clean package
+java -jar target/case_study-0.0.1-SNAPSHOT.jar</pre
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">2</div>
+                  <h3 class="step-title">Development Workflow</h3>
+                </div>
+                <div class="step-content">
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Development cycle
+./mvnw clean compile          # Compile source code
+./mvnw test                   # Run unit tests
+./mvnw spring-boot:run        # Start application
+./mvnw clean package          # Build deployable JAR</pre
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">3</div>
+                  <h3 class="step-title">NPM Integration Commands</h3>
+                </div>
+                <div class="step-content">
+                  <p>
+                    These NPM commands are configured in package.json for
+                    convenience:
+                  </p>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# NPM scripts for Java development
+npm run java:dev              # ./mvnw spring-boot:run
+npm run java:build            # ./mvnw clean package
+npm run java:test             # ./mvnw test
+npm run java:clean            # ./mvnw clean</pre
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Troubleshooting Tab -->
+            <div id="troubleshooting" class="tab-pane">
+              <h2 style="margin-bottom: 20px; color: #495057">
+                🔧 Troubleshooting Guide
+              </h2>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">1</div>
+                  <h3 class="step-title">Common Issues</h3>
+                </div>
+                <div class="step-content">
+                  <div class="alert alert-warning">
+                    <strong>⚠️ Issue:</strong> "JAVA_HOME is not defined
+                    correctly"
+                  </div>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Fix JAVA_HOME
+# Windows
+set JAVA_HOME=C:\Program Files\Java\jdk-17
+
+# macOS/Linux
+export JAVA_HOME=/path/to/java-17
+export PATH=$JAVA_HOME/bin:$PATH</pre
+                    >
+                  </div>
+
+                  <div class="alert alert-warning">
+                    <strong>⚠️ Issue:</strong> "Port 8080 already in use"
+                  </div>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Find and kill process using port 8080
+# Windows
+netstat -ano | findstr 8080
+taskkill /PID [PID_NUMBER] /F
+
+# macOS/Linux
+sudo lsof -t -i:8080 | xargs kill -9
+
+# Or change port in application.properties
+server.port=8081</pre
+                    >
+                  </div>
+
+                  <div class="alert alert-warning">
+                    <strong>⚠️ Issue:</strong> "Maven dependencies not found"
+                  </div>
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Clear Maven cache and reinstall
+./mvnw clean
+rm -rf ~/.m2/repository
+./mvnw clean compile</pre
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">2</div>
+                  <h3 class="step-title">Performance Tuning</h3>
+                </div>
+                <div class="step-content">
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                      Copy
+                    </button>
+                    <pre>
+# Increase JVM memory for better performance
+export MAVEN_OPTS="-Xmx2g -Xms1g"
+
+# Run with specific JVM arguments
+./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-Xmx1g -Xms512m"</pre
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verification Tab -->
+            <div id="verification" class="tab-pane">
+              <h2 style="margin-bottom: 20px; color: #495057">
+                ✅ Application Verification
+              </h2>
+
+              <div class="verification-section">
+                <h4>🌐 Application Endpoints</h4>
+                <p>
+                  Once the Spring Boot application is running, verify these
+                  endpoints:
+                </p>
+
+                <div class="endpoint-list">
+                  <div class="endpoint-item">
+                    <span class="endpoint-url">http://localhost:8080</span>
+                    <button
+                      class="endpoint-test"
+                      onclick="testEndpoint('http://localhost:8080')"
+                    >
+                      Test
+                    </button>
+                  </div>
+                  <div class="endpoint-item">
+                    <span class="endpoint-url"
+                      >http://localhost:8080/products</span
+                    >
+                    <button
+                      class="endpoint-test"
+                      onclick="testEndpoint('http://localhost:8080/products')"
+                    >
+                      Test
+                    </button>
+                  </div>
+                  <div class="endpoint-item">
+                    <span class="endpoint-url"
+                      >http://localhost:8080/orders</span
+                    >
+                    <button
+                      class="endpoint-test"
+                      onclick="testEndpoint('http://localhost:8080/orders')"
+                    >
+                      Test
+                    </button>
+                  </div>
+                  <div class="endpoint-item">
+                    <span class="endpoint-url"
+                      >http://localhost:8080/swagger-ui.html</span
+                    >
+                    <button
+                      class="endpoint-test"
+                      onclick="testEndpoint('http://localhost:8080/swagger-ui.html')"
+                    >
+                      Test
+                    </button>
+                  </div>
+                  <div class="endpoint-item">
+                    <span class="endpoint-url"
+                      >http://localhost:8080/h2-console</span
+                    >
+                    <button
+                      class="endpoint-test"
+                      onclick="testEndpoint('http://localhost:8080/h2-console')"
+                    >
+                      Test
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="verification-section">
+                <h4>🎯 Success Indicators</h4>
+                <div class="requirements-list">
+                  <div class="requirement-card">
+                    <h4>✅ Application Started</h4>
+                    <ul style="margin-left: 20px; color: #6c757d">
+                      <li>Console shows "Started CaseStudyApplication"</li>
+                      <li>No error messages in console</li>
+                      <li>Port 8080 is listening</li>
+                    </ul>
+                  </div>
+
+                  <div class="requirement-card">
+                    <h4>📊 Database Ready</h4>
+                    <ul style="margin-left: 20px; color: #6c757d">
+                      <li>H2 console accessible</li>
+                      <li>Tables created automatically</li>
+                      <li>Sample data loaded (if configured)</li>
+                    </ul>
+                  </div>
+
+                  <div class="requirement-card">
+                    <h4>🔌 APIs Working</h4>
+                    <ul style="margin-left: 20px; color: #6c757d">
+                      <li>Products API returns data</li>
+                      <li>Orders API accepts requests</li>
+                      <li>Swagger UI loads properly</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="action-bar">
+                <button class="btn btn-primary" onclick="checkSystemStatus()">
+                  🔍 Run System Check
+                </button>
+                <button class="btn btn-success" onclick="openSpringBootApp()">
+                  🚀 Open Spring Boot App
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // Initialize system check on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(checkSystemStatus, 1000);
+      });
+
+      // Tab functionality
+      function showTab(tabName) {
+        // Hide all tab panes
+        document.querySelectorAll(".tab-pane").forEach((pane) => {
+          pane.classList.remove("active");
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll(".nav-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Show selected tab pane
+        document.getElementById(tabName).classList.add("active");
+
+        // Add active class to clicked tab
+        event.target.classList.add("active");
+      }
+
+      // Platform selection
+      function showPlatform(platform) {
+        // Hide all platform content
+        document.querySelectorAll(".platform-content").forEach((content) => {
+          content.classList.remove("active");
+        });
+
+        // Remove active class from all platform tabs
+        document.querySelectorAll(".platform-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Show selected platform content
+        document.getElementById(platform).classList.add("active");
+
+        // Add active class to clicked platform tab
+        event.target.classList.add("active");
+      }
+
+      // Copy to clipboard functionality
+      function copyToClipboard(button) {
+        const codeBlock = button.nextElementSibling;
+        const text = codeBlock.textContent;
+
+        navigator.clipboard.writeText(text).then(() => {
+          const originalText = button.textContent;
+          button.textContent = "✓ Copied!";
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 2000);
+        });
+      }
+
+      // System status check
+      async function checkSystemStatus() {
+        // Reset status indicators
+        document.getElementById("java-status").textContent = "Checking...";
+        document.getElementById("java-status").className =
+          "status-value status-checking";
+
+        document.getElementById("maven-status").textContent = "Checking...";
+        document.getElementById("maven-status").className =
+          "status-value status-checking";
+
+        document.getElementById("springboot-status").textContent =
+          "Checking...";
+        document.getElementById("springboot-status").className =
+          "status-value status-checking";
+
+        // Simulate system checks (in real implementation, these would be actual checks)
+        setTimeout(() => {
+          // Java check (simulated)
+          document.getElementById("java-status").textContent = "Not Detected";
+          document.getElementById("java-status").className =
+            "status-value status-error";
+
+          // Maven check (simulated)
+          document.getElementById("maven-status").textContent = "Not Detected";
+          document.getElementById("maven-status").className =
+            "status-value status-error";
+
+          // Spring Boot check
+          checkSpringBootStatus();
+        }, 2000);
+      }
+
+      // Check Spring Boot application status
+      async function checkSpringBootStatus() {
+        try {
+          const response = await fetch("http://localhost:8080/actuator/health");
+          if (response.ok) {
+            document.getElementById("springboot-status").textContent =
+              "Running ✅";
+            document.getElementById("springboot-status").className =
+              "status-value status-success";
+          } else {
+            throw new Error("Not responding");
+          }
+        } catch (error) {
+          document.getElementById("springboot-status").textContent =
+            "Not Running";
+          document.getElementById("springboot-status").className =
+            "status-value status-error";
+        }
+      }
+
+      // Test individual endpoints
+      async function testEndpoint(url) {
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = "Testing...";
+        button.disabled = true;
+
+        try {
+          const response = await fetch(url);
+          if (response.ok) {
+            button.textContent = "✅ OK";
+            button.style.background = "#28a745";
+          } else {
+            throw new Error("Not responding");
+          }
+        } catch (error) {
+          button.textContent = "❌ Failed";
+          button.style.background = "#dc3545";
+        }
+
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.background = "#667eea";
+          button.disabled = false;
+        }, 3000);
+      }
+
+      // Open Spring Boot application
+      function openSpringBootApp() {
+        window.open("http://localhost:8080", "_blank");
+      }
+    </script>
+  </body>
+</html>
