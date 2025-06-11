@@ -724,6 +724,67 @@ mvn -version
               <div class="step-section">
                 <div class="step-header">
                   <div class="step-number">2</div>
+                  <h3 class="step-title">Maven Wrapper Setup</h3>
+                </div>
+                <div class="step-content">
+                  <div class="alert alert-info">
+                    <strong>📝 About Maven Wrapper:</strong> This project
+                    includes a Maven Wrapper (mvnw) that automatically downloads
+                    the correct Maven version. You don't need to install Maven
+                    system-wide!
+                  </div>
+
+                  <p>First, make the Maven Wrapper executable:</p>
+                  <div class="platform-tabs">
+                    <div
+                      class="platform-tab active"
+                      onclick="showPlatform('wrapper-unix')"
+                    >
+                      🐧 Linux/macOS
+                    </div>
+                    <div
+                      class="platform-tab"
+                      onclick="showPlatform('wrapper-windows')"
+                    >
+                      🪟 Windows
+                    </div>
+                  </div>
+
+                  <div id="wrapper-unix" class="platform-content active">
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+# Make Maven Wrapper executable
+chmod +x mvnw
+
+# Verify it works
+./mvnw -version</pre
+                      >
+                    </div>
+                  </div>
+
+                  <div id="wrapper-windows" class="platform-content">
+                    <div class="code-block">
+                      <button class="copy-btn" onclick="copyToClipboard(this)">
+                        Copy
+                      </button>
+                      <pre>
+# Windows - use the .cmd wrapper
+mvnw.cmd -version
+
+# Or if using Git Bash/WSL
+./mvnw -version</pre
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-section">
+                <div class="step-header">
+                  <div class="step-number">3</div>
                   <h3 class="step-title">Project Dependencies</h3>
                 </div>
                 <div class="step-content">
