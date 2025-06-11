@@ -53,11 +53,16 @@
         border-radius: 8px;
         transition: all 0.2s;
         font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
       }
 
       .back-button:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: translateY(-50%) translateX(-2px);
+        color: white;
+        text-decoration: none;
       }
 
       .header h1 {
@@ -453,7 +458,7 @@
     <div class="container">
       <div class="card">
         <header class="header">
-          <a href="/" class="back-button">��� Back to Home</a>
+          <a href="/" class="back-button">← Back to Home</a>
           <h1>☕ Java Setup Guide</h1>
           <p>Complete Guide to Running the Spring Boot Application</p>
         </header>
