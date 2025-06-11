@@ -637,6 +637,9 @@
         // Update current time every second
         setInterval(updateCurrentTime, 1000);
 
+        // Check Java status every 30 seconds
+        setInterval(checkJavaStatus, 30000);
+
         // Add keyboard shortcut for refresh (Ctrl+R or Cmd+R)
         document.addEventListener("keydown", function (e) {
           if ((e.ctrlKey || e.metaKey) && e.key === "r") {
