@@ -273,6 +273,65 @@ app.get("/health-page", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "health.html"));
 });
 
+// Java status check endpoint
+app.get("/java-status", async (req, res) => {
+  try {
+    // Try to check Spring Boot health endpoint
+    const response = await fetch("http://localhost:8080/actuator/health", {
+      timeout: 3000,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      res.json({
+        status: "running",
+        message: "Spring Boot application is running",
+        health: data,
+        port: 8080,
+        endpoints: {
+          main: "http://localhost:8080",
+          health: "http://localhost:8080/actuator/health",
+          swagger: "http://localhost:8080/swagger-ui.html",
+          h2Console: "http://localhost:8080/h2-console",
+        },
+      });
+    } else {
+      throw new Error("Health endpoint returned non-200 status");
+    }
+  } catch (error) {
+    // Try basic connectivity check
+    try {
+      const response = await fetch("http://localhost:8080/", {
+        timeout: 2000,
+      });
+
+      if (response.ok || response.status === 404) {
+        res.json({
+          status: "partial",
+          message:
+            "Spring Boot application is responding but health endpoint unavailable",
+          port: 8080,
+          endpoints: {
+            main: "http://localhost:8080",
+            swagger: "http://localhost:8080/swagger-ui.html",
+            h2Console: "http://localhost:8080/h2-console",
+          },
+        });
+      } else {
+        throw new Error("No response from port 8080");
+      }
+    } catch (secondError) {
+      res.json({
+        status: "not_running",
+        message: "Spring Boot application is not running",
+        error: secondError.message,
+        expectedPort: 8080,
+        setupGuide: "http://localhost:3000/java-setup-page",
+      });
+    }
+  }
+});
+
 // Health check API (JSON)
 app.get("/health", (req, res) => {
   const memory = process.memoryUsage();
@@ -313,6 +372,11 @@ app.get("/health", (req, res) => {
       { path: "/orders", method: "GET", description: "Orders list" },
       { path: "/health-page", method: "GET", description: "Health check page" },
       { path: "/health", method: "GET", description: "Health check API" },
+      {
+        path: "/java-status",
+        method: "GET",
+        description: "Java application status",
+      },
       {
         path: "/java-commands",
         method: "GET",
@@ -355,7 +419,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Development Server running on http://localhost:${PORT}`);
+  console.log(`�� Development Server running on http://localhost:${PORT}`);
   console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs-page`);
   console.log(`🛒 Products Management: http://localhost:${PORT}/products-page`);
   console.log(`📦 Orders Management: http://localhost:${PORT}/orders-page`);
