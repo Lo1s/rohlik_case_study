@@ -353,7 +353,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Development Server running on http://localhost:${PORT}`);
   console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs-page`);
   console.log(`🛒 Products Management: http://localhost:${PORT}/products-page`);
-  console.log(`📦 Orders: http://localhost:${PORT}/orders`);
+  console.log(`📦 Orders Management: http://localhost:${PORT}/orders-page`);
   console.log(`❤️  Health Check: http://localhost:${PORT}/health-page`);
   console.log(`🔧 Java Commands: http://localhost:${PORT}/java-commands`);
   console.log(`\n📊 API Endpoints:`);
