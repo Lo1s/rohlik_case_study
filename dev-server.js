@@ -360,10 +360,11 @@ app.listen(PORT, () => {
   console.log(`🛒 Products Management: http://localhost:${PORT}/products-page`);
   console.log(`📦 Orders Management: http://localhost:${PORT}/orders-page`);
   console.log(`❤️  Health Check: http://localhost:${PORT}/health-page`);
-  console.log(`🔧 Java Commands: http://localhost:${PORT}/java-commands`);
+  console.log(`☕ Java Setup Guide: http://localhost:${PORT}/java-setup-page`);
   console.log(`\n📊 API Endpoints:`);
   console.log(`   Products API: http://localhost:${PORT}/products`);
   console.log(`   Orders API: http://localhost:${PORT}/orders`);
+  console.log(`   Java Commands JSON: http://localhost:${PORT}/java-commands`);
   console.log(`   API Docs JSON: http://localhost:${PORT}/api-docs`);
   console.log(
     `\n📝 This is a development proxy for the Spring Boot application`,
