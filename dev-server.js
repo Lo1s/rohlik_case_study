@@ -273,6 +273,11 @@ app.get("/health-page", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "health.html"));
 });
 
+// MCP Natural Language API page (HTML)
+app.get("/mcp-page", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "mcp-page.html"));
+});
+
 // System requirements check endpoints
 app.get("/system-check", async (req, res) => {
   const { exec } = require("child_process");
