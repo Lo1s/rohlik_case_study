@@ -64,9 +64,9 @@ public class McpControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpected(jsonPath("$.status").value("success"))
-                .andExpected(jsonPath("$.result").isArray())
-                .andExpected(jsonPath("$.actions").isArray());
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.result").isArray())
+                .andExpect(jsonPath("$.actions").isArray());
     }
 
     @Test
