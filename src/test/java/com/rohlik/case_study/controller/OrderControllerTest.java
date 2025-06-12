@@ -1,4 +1,4 @@
-package com.rohlik.case_study;
+package com.rohlik.case_study.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rohlik.case_study.controller.OrderController;

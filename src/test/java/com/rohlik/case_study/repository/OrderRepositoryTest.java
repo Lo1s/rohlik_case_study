@@ -1,4 +1,4 @@
-package com.rohlik.case_study;
+package com.rohlik.case_study.repository;
 
 import com.rohlik.case_study.entity.Order;
 import com.rohlik.case_study.repository.OrderRepository;
