@@ -58,6 +58,8 @@
       .back-button:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: translateY(-50%) translateX(-2px);
+        color: white;
+        text-decoration: none;
       }
 
       .header h1 {
@@ -640,15 +642,24 @@
 
       // Initialize page
       document.addEventListener("DOMContentLoaded", function () {
+        console.log("Page loaded, initializing...");
         loadProducts();
       });
 
       // Load products from API
       async function loadProducts() {
+        console.log("Loading products...");
         showLoading(true);
         try {
           const response = await fetch("/products");
+          console.log("Products response:", response.status);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
           const result = await response.json();
+          console.log("Products data:", result);
 
           if (result.status === "success" && result.data) {
             products = result.data;
@@ -656,12 +667,13 @@
             updateStats();
             renderProducts();
             showAlert("Products loaded successfully!", "success");
+            console.log("Products loaded:", products.length);
           } else {
-            throw new Error("Failed to load products");
+            throw new Error("Invalid response format or no data");
           }
         } catch (error) {
           console.error("Error loading products:", error);
-          showAlert("Failed to load products. Please try again.", "error");
+          showAlert("Failed to load products: " + error.message, "error");
           showEmptyState();
         } finally {
           showLoading(false);
@@ -704,7 +716,7 @@
                         <div class="product-id">ID: ${product.id}</div>
                     </div>
                     
-                    <div class="product-name">${product.name}</div>
+                    <div class="product-name">${escapeHtml(product.name)}</div>
                     
                     <div class="product-details">
                         <div class="product-detail">
@@ -725,7 +737,7 @@
                         <button class="btn btn-warning btn-sm" onclick="editProduct(${product.id})">
                             ✏️ Edit
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(${product.id}, '${product.name}')">
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(${product.id}, '${escapeHtml(product.name)}')">
                             🗑️ Delete
                         </button>
                     </div>
@@ -736,6 +748,13 @@
 
         container.style.display = "grid";
         document.getElementById("empty-state").style.display = "none";
+      }
+
+      // Escape HTML to prevent XSS
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
       }
 
       // Get stock status class
@@ -784,12 +803,15 @@
         container.appendChild(alert);
 
         setTimeout(() => {
-          alert.remove();
+          if (alert.parentNode) {
+            alert.remove();
+          }
         }, 5000);
       }
 
       // Open add modal
       function openAddModal() {
+        console.log("Opening add modal...");
         editingProductId = null;
         document.getElementById("modal-title").textContent = "Add New Product";
         document.getElementById("save-btn").innerHTML = "💾 Save Product";
@@ -799,8 +821,13 @@
 
       // Edit product
       function editProduct(id) {
+        console.log("Editing product:", id);
         const product = products.find((p) => p.id === id);
-        if (!product) return;
+        if (!product) {
+          console.error("Product not found:", id);
+          showAlert("Product not found!", "error");
+          return;
+        }
 
         editingProductId = id;
         document.getElementById("modal-title").textContent = "Edit Product";
@@ -816,6 +843,7 @@
       // Save product
       async function saveProduct(event) {
         event.preventDefault();
+        console.log("Saving product...");
 
         const formData = new FormData(event.target);
         const productData = {
@@ -823,6 +851,8 @@
           price: parseFloat(formData.get("price")),
           stock: parseInt(formData.get("stock")),
         };
+
+        console.log("Product data:", productData);
 
         const saveBtn = document.getElementById("save-btn");
         const originalText = saveBtn.innerHTML;
@@ -834,6 +864,7 @@
           let response;
           if (editingProductId) {
             // Update existing product
+            console.log("Updating product:", editingProductId);
             response = await fetch(`/products/${editingProductId}`, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
@@ -841,6 +872,7 @@
             });
           } else {
             // Create new product
+            console.log("Creating new product");
             response = await fetch("/products", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -848,7 +880,14 @@
             });
           }
 
+          console.log("Save response:", response.status);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
           const result = await response.json();
+          console.log("Save result:", result);
 
           if (result.status === "success") {
             closeModal();
@@ -864,7 +903,7 @@
           }
         } catch (error) {
           console.error("Error saving product:", error);
-          showAlert("Failed to save product. Please try again.", "error");
+          showAlert("Failed to save product: " + error.message, "error");
         } finally {
           saveBtn.innerHTML = originalText;
           saveBtn.disabled = false;
@@ -873,6 +912,7 @@
 
       // Confirm delete
       function confirmDelete(id, name) {
+        console.log("Confirming delete for product:", id, name);
         document.getElementById("delete-product-name").textContent = name;
         document.getElementById("confirm-delete-btn").onclick = () =>
           deleteProduct(id);
@@ -881,6 +921,7 @@
 
       // Delete product
       async function deleteProduct(id) {
+        console.log("Deleting product:", id);
         const deleteBtn = document.getElementById("confirm-delete-btn");
         const originalText = deleteBtn.innerHTML;
         deleteBtn.innerHTML =
@@ -892,7 +933,14 @@
             method: "DELETE",
           });
 
+          console.log("Delete response:", response.status);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
           const result = await response.json();
+          console.log("Delete result:", result);
 
           if (result.status === "success") {
             closeDeleteModal();
@@ -903,7 +951,7 @@
           }
         } catch (error) {
           console.error("Error deleting product:", error);
-          showAlert("Failed to delete product. Please try again.", "error");
+          showAlert("Failed to delete product: " + error.message, "error");
         } finally {
           deleteBtn.innerHTML = originalText;
           deleteBtn.disabled = false;
@@ -912,15 +960,18 @@
 
       // Close modals
       function closeModal() {
+        console.log("Closing product modal");
         document.getElementById("product-modal").classList.remove("show");
       }
 
       function closeDeleteModal() {
+        console.log("Closing delete modal");
         document.getElementById("delete-modal").classList.remove("show");
       }
 
       // Refresh products
       async function refreshProducts() {
+        console.log("Refreshing products...");
         await loadProducts();
       }
 
@@ -936,6 +987,22 @@
           closeDeleteModal();
         }
       };
+
+      // Error handling for global errors
+      window.onerror = function (msg, url, lineNo, columnNo, error) {
+        console.error("Global error:", msg, "at", url, lineNo, columnNo);
+        showAlert(
+          "An unexpected error occurred. Please check the console for details.",
+          "error",
+        );
+        return false;
+      };
+
+      // Unhandled promise rejection handler
+      window.addEventListener("unhandledrejection", function (event) {
+        console.error("Unhandled promise rejection:", event.reason);
+        showAlert("An unexpected error occurred: " + event.reason, "error");
+      });
     </script>
   </body>
 </html>
