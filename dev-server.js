@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
       Orders: "GET /orders",
       "Create Product": "POST /products",
       "Create Order": "POST /orders",
+      "MCP Natural Language": "GET /mcp-page",
       "Java Commands": "GET /java-commands",
       "Health Check": "GET /health",
     },
@@ -214,6 +215,120 @@ function calculateMockOrderTotal(items) {
   }, 0);
 }
 
+// MCP (Model Control Protocol) endpoints
+app.post("/api/mcp/command", (req, res) => {
+  const { command, sessionId } = req.body;
+
+  // Mock natural language processing
+  let response = {
+    status: "success",
+    message: "",
+    sessionId: sessionId || "mock_session",
+    timestamp: new Date().toISOString(),
+    result: null,
+    actions: [],
+    errors: [],
+  };
+
+  const lowerCommand = command.toLowerCase();
+
+  if (lowerCommand.includes("list") && lowerCommand.includes("product")) {
+    response.message = "Listed available products";
+    response.actions = ["Retrieved 5 products from database"];
+    response.result = [
+      { id: 1, name: "Apple", price: 1.5, quantity: 100 },
+      { id: 2, name: "Banana", price: 0.8, quantity: 150 },
+      { id: 3, name: "Orange", price: 2.0, quantity: 75 },
+      { id: 4, name: "Milk", price: 3.2, quantity: 50 },
+      { id: 5, name: "Bread", price: 2.5, quantity: 80 },
+    ];
+  } else if (
+    lowerCommand.includes("create") ||
+    lowerCommand.includes("order")
+  ) {
+    const mockOrderId = Math.floor(Math.random() * 1000);
+    response.message = `Order created successfully with ID: ${mockOrderId}`;
+    response.actions = [
+      "Parsed order items from command",
+      `Created order ${mockOrderId}`,
+      lowerCommand.includes("pay")
+        ? `Order ${mockOrderId} paid successfully`
+        : `Order ${mockOrderId} created but not yet paid`,
+    ];
+    response.result = {
+      id: mockOrderId,
+      items: [
+        { productId: 1, quantity: 5 },
+        { productId: 2, quantity: 3 },
+      ],
+      paid: lowerCommand.includes("pay"),
+      createdAt: new Date().toISOString(),
+    };
+  } else if (lowerCommand.includes("pay")) {
+    const orderIdMatch = lowerCommand.match(/order\s+(\d+)/);
+    const orderId = orderIdMatch ? orderIdMatch[1] : "123";
+    response.message = `Payment processed for order ${orderId}`;
+    response.actions = [`Payment completed for order ${orderId}`];
+    response.result = { orderId: parseInt(orderId), status: "paid" };
+  } else if (lowerCommand.includes("cancel")) {
+    const orderIdMatch = lowerCommand.match(/order\s+(\d+)/);
+    const orderId = orderIdMatch ? orderIdMatch[1] : "123";
+    response.message = `Order ${orderId} cancelled successfully`;
+    response.actions = [`Order ${orderId} cancelled and stock released`];
+    response.result = { orderId: parseInt(orderId), status: "cancelled" };
+  } else {
+    response.status = "error";
+    response.message = "Command not recognized";
+    response.errors = [
+      "Try commands like 'create order for 5 bananas', 'list products', 'pay for order 123'",
+    ];
+  }
+
+  res.json({
+    ...response,
+    note: "This is a development mock. Run the actual Spring Boot app for real MCP functionality.",
+  });
+});
+
+app.get("/api/mcp/help", (req, res) => {
+  res.json({
+    title: "Model Control Protocol (MCP) - Natural Language API",
+    description: "Use natural language to interact with the e-commerce system",
+    version: "1.0.0",
+    examples: {
+      "Create Order": [
+        "create order for 5 bananas and 3 apples",
+        "buy 2 milk and 1 bread",
+        "order 10 apples and pay for it",
+      ],
+      "List Products": [
+        "list products",
+        "show available products",
+        "what products do you have",
+      ],
+      Payment: ["pay for order 123", "complete payment for order 456"],
+      "Cancel Order": ["cancel order 123", "cancel my order 456"],
+    },
+    note: "This is a development mock. Run the actual Spring Boot app for real MCP functionality.",
+  });
+});
+
+app.get("/api/mcp/status", (req, res) => {
+  res.json({
+    service: "Model Control Protocol (MCP)",
+    status: "active",
+    capabilities: [
+      "Natural Language Processing",
+      "Order Creation from Text",
+      "Product Listing",
+      "Order Payment",
+      "Order Cancellation",
+    ],
+    version: "1.0.0",
+    note: "This is a development mock. Run the actual Spring Boot app for real MCP functionality.",
+  });
+});
+
 // Java commands information
 app.get("/java-commands", (req, res) => {
   res.json({
@@ -271,6 +386,11 @@ app.get("/java-setup-page", (req, res) => {
 // Health check page (HTML)
 app.get("/health-page", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "health.html"));
+});
+
+// MCP Natural Language API page (HTML)
+app.get("/mcp-page", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "mcp-page.html"));
 });
 
 // System requirements check endpoints
