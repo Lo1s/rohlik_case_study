@@ -2,6 +2,7 @@ package com.rohlik.case_study.controller;
 
 import com.rohlik.case_study.dto.CreateOrderDto;
 import com.rohlik.case_study.entity.Order;
+import com.rohlik.case_study.exception.OutOfStockException;
 import com.rohlik.case_study.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -51,6 +52,9 @@ public class OrderController {
     // --- Fallback methods ---
 
     public ResponseEntity<Order> createOrderFallback(CreateOrderDto dto, Throwable t) {
+        if (t instanceof OutOfStockException) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.status(503).build();
     }
 

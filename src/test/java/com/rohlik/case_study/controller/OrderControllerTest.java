@@ -31,7 +31,6 @@ class OrderControllerTest {
     void createOrder_shouldReturnCreatedOrder() throws Exception {
         CreateOrderDto dto = new CreateOrderDto();
         OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId(1L);
         itemDto.setQuantity(2);
         dto.setItems(List.of(itemDto));
 
@@ -39,6 +38,22 @@ class OrderControllerTest {
 
         Mockito.when(orderService.createOrder(any(CreateOrderDto.class))).thenReturn(order);
 
+        mockMvc.perform(post("/api/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createOrder_withMultipleProducts_shouldReturnCreatedOrder() throws Exception {
+        CreateOrderDto dto = new CreateOrderDto();
+        OrderItemDto item1 = new OrderItemDto();
+        item1.setQuantity(3);
+        OrderItemDto item2 = new OrderItemDto();
+        item2.setQuantity(5);
+        dto.setItems(List.of(item1, item2));
+        Order order = new Order();
+        Mockito.when(orderService.createOrder(any(CreateOrderDto.class))).thenReturn(order);
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
