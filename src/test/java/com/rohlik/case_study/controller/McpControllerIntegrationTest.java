@@ -76,10 +76,10 @@ public class McpControllerIntegrationTest {
         mockMvc.perform(post("/api/mcp/command")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpected(status().isOk())
-                .andExpected(jsonPath("$.status").value("success"))
-                .andExpected(jsonPath("$.result.id").exists())
-                .andExpected(jsonPath("$.actions").isArray());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.result.id").exists())
+                .andExpect(jsonPath("$.actions").isArray());
     }
 
     @Test
