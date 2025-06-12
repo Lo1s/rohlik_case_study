@@ -3,6 +3,9 @@ package com.rohlik.case_study.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rohlik.case_study.dto.CreateProductDto;
 import com.rohlik.case_study.dto.UpdateProductDto;
+import com.rohlik.case_study.dto.CreateOrderDto;
+import com.rohlik.case_study.dto.CreateOrderDto.OrderItemDto;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -112,5 +117,59 @@ class ProductControllerIntegrationTest {
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].id", not(hasItem(id.intValue()))));
+    }
+
+    @Test
+    void deleteProduct_shouldReturn204_whenNoOrdersDependOnIt() throws Exception {
+        // Create a product
+        CreateProductDto createDto = new CreateProductDto();
+        createDto.setName("IndependentProduct");
+        createDto.setQuantity(10);
+        createDto.setPrice(5.0);
+
+        String createResponse = mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createDto)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        Long id = objectMapper.readTree(createResponse).get("id").asLong();
+
+        // Delete product (should succeed since no orders depend on it)
+        mockMvc.perform(delete("/api/products/" + id))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteProduct_shouldReturn4xx_whenOrdersDependOnIt() throws Exception {
+        // Create a product
+        CreateProductDto createDto = new CreateProductDto();
+        createDto.setName("DependentProduct");
+        createDto.setQuantity(10);
+        createDto.setPrice(5.0);
+
+        String createResponse = mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createDto)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        Long productId = objectMapper.readTree(createResponse).get("id").asLong();
+
+        // Create an order that uses this product
+        CreateOrderDto orderDto = new CreateOrderDto();
+        OrderItemDto itemDto = new OrderItemDto();
+        itemDto.setProductId(productId);
+        itemDto.setQuantity(1);
+        orderDto.setItems(List.of(itemDto));
+
+        mockMvc.perform(post("/api/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(orderDto)))
+                .andExpect(status().isOk());
+
+        // Try to delete the product (should fail with 4xx)
+        mockMvc.perform(delete("/api/products/" + productId))
+                .andExpect(status().is4xxClientError());
     }
 }

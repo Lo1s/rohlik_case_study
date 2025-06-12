@@ -4,6 +4,7 @@ import com.rohlik.case_study.dto.CreateProductDto;
 import com.rohlik.case_study.dto.ProductDto;
 import com.rohlik.case_study.dto.UpdateProductDto;
 import com.rohlik.case_study.entity.Product;
+import com.rohlik.case_study.exception.ProductInActiveOrderException;
 import com.rohlik.case_study.exception.ResourceNotFoundException;
 import com.rohlik.case_study.repository.OrderItemRepository;
 import com.rohlik.case_study.repository.OrderRepository;
@@ -62,7 +63,7 @@ public class ProductService {
                         .anyMatch(item -> item.getProduct().getId().equals(id)));
 
         if (inActiveOrders) {
-            throw new IllegalStateException("Cannot delete product with active orders: " + id);
+            throw new ProductInActiveOrderException(id);
         }
         productRepository.delete(product);
     }

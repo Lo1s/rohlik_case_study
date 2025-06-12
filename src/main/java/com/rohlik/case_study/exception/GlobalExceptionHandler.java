@@ -31,6 +31,11 @@ public class GlobalExceptionHandler {
                              .body("Validation error: " + msg);
     }
 
+    @ExceptionHandler(ProductInActiveOrderException.class)
+    public ResponseEntity<String> handleProductInActiveOrder(ProductInActiveOrderException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

@@ -3,6 +3,7 @@ package com.rohlik.case_study.controller;
 import com.rohlik.case_study.dto.CreateProductDto;
 import com.rohlik.case_study.dto.ProductDto;
 import com.rohlik.case_study.dto.UpdateProductDto;
+import com.rohlik.case_study.exception.ProductInActiveOrderException;
 import com.rohlik.case_study.service.ProductService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
@@ -70,6 +71,9 @@ public class ProductController {
     }
 
     public ResponseEntity<Void> deleteProductFallback(Long id, Throwable t) {
+        if (t instanceof ProductInActiveOrderException) {
+            return ResponseEntity.status(400).build(); // Bad request if product is in active orders
+        }
         return ResponseEntity.status(503).build();
     }
 }
