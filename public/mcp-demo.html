@@ -298,7 +298,7 @@
     </div>
 
     <script>
-        const API_BASE = window.location.origin.replace(':3000', ':8080');
+        const API_BASE = 'https://work-2-lrwkdrinfmfdqkvu.prod-runtime.all-hands.dev';
 
         function setRequest(text) {
             document.getElementById('orderRequest').value = text;
@@ -351,7 +351,13 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    const result = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+                    let result;
+                    try {
+                        result = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+                    } catch (e) {
+                        // If JSON parsing fails, use the string as-is
+                        result = data.result;
+                    }
                     showResult(result);
                 } else {
                     showResult(data.error || 'Unknown error occurred', true);
@@ -383,18 +389,27 @@
             const hideLoading = showLoading('processBtn');
 
             try {
+                // Prompt user for search query or use default
+                const query = prompt('Enter search query (e.g., "apple", "banana", "orange"):') || 'all';
+                
                 const response = await fetch(`${API_BASE}/api/mcp/tools/search_products/execute`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ query: '' })
+                    body: JSON.stringify({ query: query })
                 });
 
                 const data = await response.json();
                 
                 if (data.success) {
-                    const result = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+                    let result;
+                    try {
+                        result = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+                    } catch (e) {
+                        // If JSON parsing fails, use the string as-is
+                        result = data.result;
+                    }
                     showResult(result);
                 } else {
                     showResult(data.error || 'Failed to search products', true);
