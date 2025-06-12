@@ -89,10 +89,10 @@ public class McpControllerIntegrationTest {
         mockMvc.perform(post("/api/mcp/command")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpected(status().isOk())
-                .andExpected(jsonPath("$.status").value("success"))
-                .andExpected(jsonPath("$.result.id").exists())
-                .andExpected(jsonPath("$.result.paid").value(true));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.result.id").exists())
+                .andExpect(jsonPath("$.result.paid").value(true));
     }
 
     @Test
@@ -102,9 +102,9 @@ public class McpControllerIntegrationTest {
         mockMvc.perform(post("/api/mcp/command")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpected(status().isBadRequest())
-                .andExpected(jsonPath("$.status").value("error"))
-                .andExpected(jsonPath("$.errors").isArray());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.errors").isArray());
     }
 
     @Test
@@ -114,6 +114,6 @@ public class McpControllerIntegrationTest {
         mockMvc.perform(post("/api/mcp/command")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpected(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 }
