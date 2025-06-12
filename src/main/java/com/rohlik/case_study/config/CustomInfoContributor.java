@@ -1,7 +1,7 @@
 package com.rohlik.case_study.config;
 
-import org.springframework.boot.actuator.info.Info;
-import org.springframework.boot.actuator.info.InfoContributor;
+import org.springframework.boot.actuate.info.Info;
+import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
