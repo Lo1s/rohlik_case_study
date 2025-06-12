@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
       Orders: "GET /orders",
       "Create Product": "POST /products",
       "Create Order": "POST /orders",
+      "MCP Natural Language": "GET /mcp-page",
       "Java Commands": "GET /java-commands",
       "Health Check": "GET /health",
     },
